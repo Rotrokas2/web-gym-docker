@@ -2,11 +2,14 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-# Copiamos todo para que también estén los archivos de test y package.json
-COPY . .
+# Copiamos solo package.json y package-lock.json (si existe) primero para cachear las capas
+COPY package*.json ./
 
-# Instalamos TODAS las dependencias, incluyendo devDependencies
-RUN npm install
+# Instalamos dependencias (incluye devDependencies porque no usas --production)
+RUN npm install --save-dev codecov
+
+# Ahora copiamos el resto del código y tests
+COPY . .
 
 # Exponemos el puerto para el servidor
 EXPOSE 3000
