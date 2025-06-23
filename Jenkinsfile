@@ -4,6 +4,7 @@ pipeline {
     environment {
         BACKEND_IMAGE = 'web-gym-app-backend'
         FRONTEND_IMAGE = 'web-gym-app-frontend'
+        CODECOV_TOKEN = credentials('CODECOV_TOKEN')  // Token como credencial segura
     }
 
     stages {
@@ -40,25 +41,10 @@ pipeline {
             steps {
                 dir('Backend') {
                     bat """
-                    docker run --rm ${BACKEND_IMAGE} npm test
+                    docker run --rm ${BACKEND_IMAGE} npm test -- --coverage
                     """
                 }
             }
         }
 
-        stage('Deploy') {
-            steps {
-                echo 'Desplegando aplicación... (aquí irían comandos de despliegue reales)'
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline finalizado'
-        }
-        failure {
-            echo 'Falló el pipeline'
-        }
-    }
-}
+        stage('Upload Coverage to Codeco
